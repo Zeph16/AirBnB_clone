@@ -10,8 +10,8 @@ import shlex
 class HBNBCommand(cmd.Cmd):
     """ Includes all functions to handle commands """
     prompt = "(hbnb) "
-    models = []
-    cmds = []
+    models = ['BaseModel']
+    cmds = ['create', 'show', 'destroy', 'all', 'update']
 
     def help_help(self):
         """ Shows help command description """
@@ -28,6 +28,106 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ Doesn't do anything when empty line is input """
         pass
+
+    def do_create(self, model):
+        """ Creates an instance of the given class """
+        if not model:
+            print("** class name missing **")
+        elif model not in HBNBCommand.models:
+            print("** class doesn't exist **")
+        else:
+            objdict = {'BaseModel': BaseModel}
+            m = objdict[model]()
+            print(m.id)
+            m.save()
+
+    def show(self, arg):
+        """ Displays a string representation of the given instance """
+        if not arg:
+            print("** class name missing **")
+            return
+        args = arg.split(' ')
+        if args[0] not in HBNBCommand.models:
+            print("** class doesn't exist **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        else:
+            all_objs = storage.all()
+            for key, value in all_objs.items():
+                ob_name = value.__class__.__name__
+                ob_id = value.id
+                if ob_name == args[0] and ob_id == args[1].strip('"'):
+                    print(value)
+                    return
+            print("** no instance found **")
+
+    def do_destroy(self, arg):
+        """ Deletes a specified instance """
+        if not arg:
+            print("** class name missing **")
+            return
+        args = arg.split(' ')
+        if args[0] not in HBNBCommand.models:
+            print("** class doesn't exist **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        else:
+            all_objs = storage.all()
+            for key, value in all_objs.items():
+                ob_name = value.__class__.__name__
+                ob_id = value.id
+                if ob_name == args[0] and ob_id == args[1].strip('"'):
+                    del value
+                    del storage._FileStorage__objects[key]
+                    storage.save()
+                    return
+            print("** no instance found **")
+
+    def do_all(self, arg):
+        """ Displays the string representation of all instances of a specified class """
+        if not arg:
+            print("** class name missing **")
+            return
+        args = arg.split(' ')
+        if args[0] not in HBNBCommand.models:
+            print("** class doesn't exist **")
+        else:
+            all_objs = storage.all()
+            list_instances = []
+            for key, value in all_objs.items():
+                ob_name = value.__class__.__name__
+                if ob_name == args[0]:
+                    list_instances += [value.__str__()]
+            print(list_instances)
+
+    def do_update(self, arg):
+        """ Updates an instance """
+        if not arg:
+            print("** class name missing **")
+            return
+        a = ""
+        for argv in arg.split(','):
+            a = a + argv
+        args = shlex.split(a)
+        if args[0] not in HBNBCommand.models:
+            print("** class doesn't exist **")
+        elif len(args) == 1:
+            print("** instance id missing **")
+        else:
+            all_objs = storage.all()
+            for key, objc in all_objs.items():
+                ob_name = objc.__class__.__name__
+                ob_id = objc.id
+                if ob_name == args[0] and ob_id == args[1].strip('"'):
+                    if len(args) == 2:
+                        print("** attribute name missing **")
+                    elif len(args) == 3:
+                        print("** value missing **")
+                    else:
+                        setattr(objc, args[2], args[3])
+                        storage.save()
+                    return
+            print("** no instance found **")
 
     def do_EOF(self, line):
         """ Exit function with EOF """
