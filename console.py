@@ -3,6 +3,12 @@
 import cmd
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
+from models.amenity import Amenity
+from models.review import Review
+from models.city import City
+from models.place import Place
+from models.state import State
 import json
 import shlex
 
@@ -10,7 +16,7 @@ import shlex
 class HBNBCommand(cmd.Cmd):
     """ Includes all functions to handle commands """
     prompt = "(hbnb) "
-    models = ['BaseModel']
+    models = ['BaseModel', 'User', 'Amenity', 'Place', 'State', 'Review']
     cmds = ['create', 'show', 'destroy', 'all', 'update']
 
     def help_help(self):
@@ -36,7 +42,7 @@ class HBNBCommand(cmd.Cmd):
         elif model not in HBNBCommand.models:
             print("** class doesn't exist **")
         else:
-            objdict = {'BaseModel': BaseModel}
+            objdict = {'BaseModel': BaseModel, 'User': User, 'Place': Place, 'City': City, 'Amenity': Amenity, 'Review': Review, 'State': State}
             m = objdict[model]()
             print(m.id)
             m.save()
