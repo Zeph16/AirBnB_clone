@@ -17,7 +17,7 @@ class HBNBCommand(cmd.Cmd):
     """ Includes all functions to handle commands """
     prompt = "(hbnb) "
     models = ['BaseModel', 'User', 'Amenity', 'Place', 'State', 'Review']
-    cmds = ['create', 'show', 'destroy', 'all', 'update']
+    cmds = ['create', 'show', 'destroy', 'all', 'update', 'count']
 
     def help_help(self):
         """ Shows help command description """
@@ -35,6 +35,27 @@ class HBNBCommand(cmd.Cmd):
         """ Doesn't do anything when empty line is input """
         pass
 
+    def precmd(self, arg):
+        """ Formats command input before processing """
+        if '.' in arg and '(' in arg and ')' in arg:
+            model = arg.split('.')
+            cmd = model[1].split('(')
+            args = cmd[1].split(')')
+            if model[0] in HBNBCommand.models and cmd[0] in HBNBCommand.cmds:
+                arg = cmd[0] + ' ' + model[0] + ' ' + args[0]
+            print(arg)
+        return arg
+
+    def do_count(self, cls_name):
+        """ Displays number of stored instances of a specified class """
+        count = 0
+        all_objs = storage.all()
+        for k, v in all_objs.items():
+            clss = k.split('.')
+            if clss[0] == cls_name:
+                count = count + 1
+        print(count)
+
     def do_create(self, model):
         """ Creates an instance of the given class """
         if not model:
@@ -47,8 +68,9 @@ class HBNBCommand(cmd.Cmd):
             print(m.id)
             m.save()
 
-    def show(self, arg):
+    def do_show(self, arg):
         """ Displays a string representation of the given instance """
+
         if not arg:
             print("** class name missing **")
             return
