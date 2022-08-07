@@ -63,7 +63,15 @@ class HBNBCommand(cmd.Cmd):
         elif model not in HBNBCommand.models:
             print("** class doesn't exist **")
         else:
-            objdict = {'BaseModel': BaseModel, 'User': User, 'Place': Place, 'City': City, 'Amenity': Amenity, 'Review': Review, 'State': State}
+            objdict = {
+                'BaseModel': BaseModel, 
+                'User': User, 
+                'Place': Place, 
+                'City': City, 
+                'Amenity': Amenity, 
+                'Review': Review, 
+                'State': State,
+                }
             m = objdict[model]()
             print(m.id)
             m.save()
@@ -112,7 +120,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
 
     def do_all(self, arg):
-        """ Displays the string representation of all instances of a specified class """
+        """ Displays the string rep of all instances of a specified class """
         if not arg:
             print("** class name missing **")
             return
@@ -164,6 +172,7 @@ class HBNBCommand(cmd.Cmd):
     def do_quit(self, line):
         """ Normally quits the interpreter """
         return True
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
