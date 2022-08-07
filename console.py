@@ -64,12 +64,12 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             objdict = {
-                'BaseModel': BaseModel, 
-                'User': User, 
-                'Place': Place, 
-                'City': City, 
-                'Amenity': Amenity, 
-                'Review': Review, 
+                'BaseModel': BaseModel,
+                'User': User,
+                'Place': Place,
+                'City': City,
+                'Amenity': Amenity,
+                'Review': Review,
                 'State': State,
                 }
             m = objdict[model]()
